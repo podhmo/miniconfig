@@ -55,7 +55,7 @@ how to define and use directive ::
     config.add_directive("hello", hello)
     config.hello("foo")
 
-define by dotted name is also supported ::
+it is also supported that to define directives by dotted name::
 
     ## foo/bar.py
     def hello(config):
