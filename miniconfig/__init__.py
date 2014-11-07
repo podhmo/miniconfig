@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import logging
 logger = logging.getLogger(__name__)
+from functools import partial
 import pkg_resources
 import sys
 
@@ -23,11 +24,16 @@ def caller_module(level=2):
     return sys.modules[name]
 
 
+class Control(object):
+    pass
+
+
 class ConfiguratorCore(object):
-    def __init__(self, settings=None, module=None, queue=None):
+    def __init__(self, settings=None, module=None, queue=None, control=None):
         self.settings = settings or {}
         self.module = module or caller_module()
         self.queue = queue or []
+        self.control = Control()
 
     def build_import_symbol_string(self, fn_or_string):
         if not fn_or_string.startswith("."):
@@ -58,7 +64,10 @@ class ConfiguratorCore(object):
             module = import_symbol(module_string)
             includeme = getattr(module, fn_name)
 
-        config = self.__class__(self.settings, module=module, queue=self.queue)
+        config = self.__class__(self.settings,
+                                module=module,
+                                queue=self.queue,
+                                control=self.control)
         return includeme(config)
 
     def action(self, callback, order=0):
@@ -68,3 +77,19 @@ class ConfiguratorCore(object):
         for o, callback in sorted(self.queue, key=lambda xs: xs[0]):
             callback()
         self.queue = []
+
+    def maybe_dotted(self, fn_or_string):
+        if callable(fn_or_string):
+            return fn_or_string
+        symbol_string = self.build_import_symbol_string(fn_or_string)
+        return import_symbol(symbol_string)
+
+    def add_directive(self, name, fn_or_string):
+        fn = self.maybe_dotted(fn_or_string)
+        setattr(self.control, name, fn)
+
+    def __getattr__(self, name):
+        attr = getattr(self.control, name)
+        if callable(attr):
+            return partial(attr, self)
+        return attr
