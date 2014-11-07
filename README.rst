@@ -39,10 +39,10 @@ application user ::
     app = config.make_app()
 
 
-Add directives
+Adding directives
 ---------------------------------------
 
-`directive' means that action of configurator.
+directive means that action of configurator.
 
 how to define and use directive ::
 
@@ -55,7 +55,7 @@ how to define and use directive ::
     config.add_directive("hello", hello)
     config.hello("foo")
 
-define by dotted name is also supported::
+define by dotted name is also supported ::
 
     ## foo/bar.py
     def hello(config):
