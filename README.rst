@@ -37,3 +37,32 @@ application user ::
     config = Configurator()
     config.include("yourapplication.pluginB")
     app = config.make_app()
+
+
+Add directives
+---------------------------------------
+
+`directive' means that action of configurator.
+
+how to define and use directive ::
+
+    def hello(config, name):
+        assert config.settings["foo"] == "foo"
+        print("hello: {}".format(name))
+
+
+    config = Configurator(settings={"foo": "foo"})
+    config.add_directive("hello", hello)
+    config.hello("foo")
+
+define by dotted name is also supported::
+
+    ## foo/bar.py
+    def hello(config):
+        print("hai")
+
+    ## yourapplication
+    config = Configurator()
+    config.add_directive("hello", "foo.bar:hello")
+    config.hello()  # hai
+
