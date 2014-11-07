@@ -47,8 +47,10 @@ directive means that action of configurator.
 how to define and use directive ::
 
     def hello(config, name):
-        assert config.settings["foo"] == "foo"
-        print("hello: {}".format(name))
+        def register():
+            assert config.settings["foo"] == "foo"
+            print("hello: {}".format(name))
+        config.action(register)
 
 
     config = Configurator(settings={"foo": "foo"})
@@ -59,10 +61,13 @@ it is also supported that to define directives by dotted name::
 
     ## foo/bar.py
     def hello(config):
-        print("hai")
+        def register():
+            print("hai")
+        config.action(register)
 
     ## yourapplication
     config = Configurator()
     config.add_directive("hello", "foo.bar:hello")
-    config.hello()  # hai
+    config.hello()
+    config.commit() # hai
 
