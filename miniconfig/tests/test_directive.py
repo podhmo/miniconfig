@@ -69,3 +69,36 @@ def test_directive__action_with_arguments():
     assert finished[0] is True
     assert collection == [10, 200]
 
+
+def test_directive__sub_configurator_also_same_control():
+    config = _getTarget()()
+    finished = [False]
+
+    def includeme(config2):
+        assert config2.hello() == "hello"
+        finished[0] = True
+
+    def hello(config):
+        return "hello"
+    config.add_directive("hello", hello)
+    config.include(includeme)
+
+    assert finished[0] is True
+    assert config.hello() == "hello"
+
+
+def test_directive__sub_configurator_also_same_control2():
+    class WithHelloControl(object):
+        def hello(self, config):
+            return "hello"
+
+    config = _getTarget()(control=WithHelloControl())
+    finished = [False]
+
+    def includeme(config2):
+        assert config2.hello() == "hello"
+        finished[0] = True
+
+    config.include(includeme)
+    assert finished[0] is True
+    assert config.hello() == "hello"

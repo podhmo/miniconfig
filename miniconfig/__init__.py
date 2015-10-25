@@ -33,7 +33,7 @@ class ConfiguratorCore(object):
         self.settings = settings or {}
         self.module = module or caller_module()
         self.queue = queue or []
-        self.control = Control()
+        self.control = control or Control()
 
     def build_import_symbol_string(self, fn_or_string):
         if not fn_or_string.startswith("."):
