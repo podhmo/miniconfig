@@ -54,7 +54,7 @@ class ConfiguratorCore(object):
     def include(self, fn_or_string):
         if callable(fn_or_string):
             includeme = fn_or_string
-            module = None
+            module = getattr(fn_or_string, "__module__", None)
         else:
             symbol_string = self.build_import_symbol_string(fn_or_string)
             if ":" in symbol_string:
