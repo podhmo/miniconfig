@@ -47,7 +47,7 @@ class PyTest(TestCommand):
 
 
 setup(name='miniconfig',
-      version='0.1.1',
+      version='0.1.2',
       description='configurator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
@@ -58,7 +58,7 @@ setup(name='miniconfig',
       author="podhmo",
       author_email="ababjam61@gmail.com",
       url="https://github.com/podhmo/miniconfig",
-      packages=find_packages(exclude=["tests.*"]),
+      packages=find_packages(exclude=["miniconfig.tests"]),
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
