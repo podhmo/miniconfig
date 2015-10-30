@@ -58,7 +58,7 @@ setup(name='miniconfig',
       author="podhmo",
       author_email="ababjam61@gmail.com",
       url="https://github.com/podhmo/miniconfig",
-      packages=find_packages("tests.*"),
+      packages=find_packages(exclude=["tests.*"]),
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
@@ -71,4 +71,3 @@ setup(name='miniconfig',
       license="mit",
       entry_points="""
 """)
-
