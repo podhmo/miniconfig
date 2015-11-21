@@ -35,7 +35,7 @@ def test_build_import_path2(current_module, symbol_string, import_symbol):
         pass
     config = _getTarget()(module=module())
     config.module.__name__ = current_module
-    assert config.build_import_path(symbol_string, dont_poppingn=False) == import_symbol
+    assert config.build_import_path(symbol_string, dont_popping=False) == import_symbol
 
 
 def test_include__function():
