@@ -35,7 +35,7 @@ class ConfiguratorCore(object):
         self.module = module or caller_module()
         self.control = control or Control()
 
-    def build_import_symbol_string(self, fn_or_string):
+    def build_import_symbol_string(self, fn_or_string, dot_is_current_position=True):
         if not fn_or_string.startswith("."):
             return fn_or_string
 
@@ -50,7 +50,9 @@ class ConfiguratorCore(object):
             poped.append(nodes.pop())
         if fn_or_string == "" or fn_or_string.endswith("."):
             return ".".join(nodes)
-        nodes.append(poped[-1])
+
+        if dot_is_current_position:
+            nodes.append(poped[-1])
         return ".".join(nodes) + "." + fn_or_string[i:]
 
     def include(self, fn_or_string):
@@ -82,7 +84,7 @@ class ConfiguratorCore(object):
     def maybe_dotted(self, fn_or_string):
         if callable(fn_or_string):
             return fn_or_string
-        symbol_string = self.build_import_symbol_string(fn_or_string)
+        symbol_string = self.build_import_symbol_string(fn_or_string, dot_is_current_position=False)
         return import_symbol(symbol_string)
 
     def add_directive(self, name, fn_or_string):

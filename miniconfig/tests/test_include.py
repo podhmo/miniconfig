@@ -23,6 +23,21 @@ def test_build_import_symbol_string(current_module, symbol_string, import_symbol
     assert config.build_import_symbol_string(symbol_string) == import_symbol
 
 
+@pytest.mark.parametrize("current_module, symbol_string, import_symbol", [
+    ("foo.bar.boo", "moo.Fn", "moo.Fn"),
+    ("foo.bar.boo", ".Fn", "foo.bar.Fn"),
+    ("foo.bar.boo", ".moo:Fn", "foo.bar.moo:Fn"),
+    ("foo.bar.boo", ".moo.Fn", "foo.bar.moo.Fn"),
+    ("foo.bar.boo", "..moo:Fn", "foo.moo:Fn"),
+])
+def test_build_import_symbol_string2(current_module, symbol_string, import_symbol):
+    class module:
+        pass
+    config = _getTarget()(module=module())
+    config.module.__name__ = current_module
+    assert config.build_import_symbol_string(symbol_string, dot_is_current_position=False) == import_symbol
+
+
 def test_include__function():
     status = [False]
 
