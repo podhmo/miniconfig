@@ -70,7 +70,8 @@ class ConfiguratorCore(object):
     def include(self, fn_or_string):
         if callable(fn_or_string):
             includeme = fn_or_string
-            module = getattr(fn_or_string, "__module__", None)
+            module = getattr(includeme, "__module__", None)
+            module = import_symbol(module)
         else:
             symbol_string = self.build_import_symbol_string(fn_or_string)
             includeme = import_symbol(symbol_string)
