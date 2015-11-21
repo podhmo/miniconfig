@@ -43,12 +43,14 @@ class ConfiguratorCore(object):
         if fn_or_string.endswith("."):
             fn_or_string = fn_or_string[1:]
 
+        poped = []
         for i, c in enumerate(fn_or_string):
             if c != ".":
                 break
-            nodes.pop()
+            poped.append(nodes.pop())
         if fn_or_string == "" or fn_or_string.endswith("."):
             return ".".join(nodes)
+        nodes.append(poped[-1])
         return ".".join(nodes) + "." + fn_or_string[i:]
 
     def include(self, fn_or_string):

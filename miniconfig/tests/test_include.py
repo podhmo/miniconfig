@@ -10,8 +10,8 @@ def _getTarget():
 @pytest.mark.parametrize("current_module, symbol_string, import_symbol", [
     ("foo.bar.boo", "moo", "moo"),
     ("foo.bar.boo", "moo.moo", "moo.moo"),
-    ("foo.bar.boo", ".moo", "foo.bar.moo"),
-    ("foo.bar.boo", "..moo", "foo.moo"),
+    ("foo.bar.boo", ".moo", "foo.bar.boo.moo"),
+    ("foo.bar.boo", "..moo", "foo.bar.moo"),
     ("foo.bar.boo", ".", "foo.bar.boo"),
     ("foo.bar.boo", "..", "foo.bar"),
 ])
