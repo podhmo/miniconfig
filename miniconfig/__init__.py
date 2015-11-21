@@ -76,7 +76,7 @@ class ConfiguratorCore(object):
             includeme = import_symbol(symbol_string)
             if not callable(includeme):
                 includeme = includeme.includeme
-            module = includeme.__module__
+            module = import_symbol(includeme.__module__)
 
         config = self.__class__(self.settings,
                                 module=module,
