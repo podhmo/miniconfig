@@ -2,7 +2,7 @@
 import logging
 logger = logging.getLogger(__name__)
 from functools import partial
-import pkg_resources
+from importlib import import_module
 import sys
 
 
@@ -15,7 +15,19 @@ class ConfigurationError(Exception):
 
 
 def import_symbol(symbol):
-    return pkg_resources.EntryPoint.parse("x=%s" % symbol).load(False)
+    if "." not in symbol:
+        return import_module(symbol)
+    elif ":" in symbol:
+        module, attr = symbol.rsplit(":", 1)
+        m = import_module(module)
+        return getattr(m, attr)
+    else:
+        module, attr = symbol.rsplit(".", 1)
+        m = import_module(module)
+        if hasattr(m, attr):
+            return getattr(m, attr)
+        else:
+            return import_module(symbol)
 
 
 def caller_module(level=2):
@@ -61,12 +73,10 @@ class ConfiguratorCore(object):
             module = getattr(fn_or_string, "__module__", None)
         else:
             symbol_string = self.build_import_symbol_string(fn_or_string)
-            if ":" in symbol_string:
-                module_string, fn_name = symbol_string.split(":", 1)
-            else:
-                module_string, fn_name = symbol_string, "includeme"
-            module = import_symbol(module_string)
-            includeme = getattr(module, fn_name)
+            includeme = import_symbol(symbol_string)
+            if not callable(includeme):
+                includeme = includeme.includeme
+            module = includeme.__module__
 
         config = self.__class__(self.settings,
                                 module=module,
