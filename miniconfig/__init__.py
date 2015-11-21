@@ -47,7 +47,7 @@ class ConfiguratorCore(object):
         self.module = module or caller_module()
         self.control = control or Control()
 
-    def build_import_symbol_string(self, fn_or_string, dot_is_current_position=True):
+    def build_import_path(self, fn_or_string, dont_popping=True):
         if not fn_or_string.startswith("."):
             return fn_or_string
 
@@ -63,9 +63,12 @@ class ConfiguratorCore(object):
         if fn_or_string == "" or fn_or_string.endswith("."):
             return ".".join(nodes)
 
-        if dot_is_current_position:
+        if dont_popping:
             nodes.append(poped[-1])
         return ".".join(nodes) + "." + fn_or_string[i:]
+
+    def is_init_module(self):
+        return "__init__.py" in self.module.__file__
 
     def include(self, fn_or_string):
         if callable(fn_or_string):
@@ -73,7 +76,7 @@ class ConfiguratorCore(object):
             module = getattr(includeme, "__module__", None)
             module = import_symbol(module)
         else:
-            symbol_string = self.build_import_symbol_string(fn_or_string)
+            symbol_string = self.build_import_path(fn_or_string, dont_popping=self.is_init_module())
             includeme = import_symbol(symbol_string)
             if not callable(includeme):
                 includeme = includeme.includeme
@@ -95,7 +98,7 @@ class ConfiguratorCore(object):
     def maybe_dotted(self, fn_or_string):
         if callable(fn_or_string):
             return fn_or_string
-        symbol_string = self.build_import_symbol_string(fn_or_string, dot_is_current_position=False)
+        symbol_string = self.build_import_path(fn_or_string, dont_popping=self.is_init_module())
         return import_symbol(symbol_string)
 
     def add_directive(self, name, fn_or_string):
