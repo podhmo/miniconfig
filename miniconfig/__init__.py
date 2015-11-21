@@ -25,14 +25,14 @@ def caller_module(level=2):
 
 
 class Control(object):
-    pass
+    def __init__(self, queue=None):
+        self.queue = queue or []
 
 
 class ConfiguratorCore(object):
-    def __init__(self, settings=None, module=None, queue=None, control=None):
+    def __init__(self, settings=None, module=None, control=None):
         self.settings = settings or {}
         self.module = module or caller_module()
-        self.queue = queue or []
         self.control = control or Control()
 
     def build_import_symbol_string(self, fn_or_string):
@@ -66,7 +66,6 @@ class ConfiguratorCore(object):
 
         config = self.__class__(self.settings,
                                 module=module,
-                                queue=self.queue,
                                 control=self.control)
         return includeme(config)
 
