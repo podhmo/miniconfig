@@ -47,7 +47,7 @@ class PyTest(TestCommand):
 
 
 setup(name='miniconfig',
-      version='0.1.7',
+      version='0.1.8',
       description='configurator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
