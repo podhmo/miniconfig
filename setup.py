@@ -47,14 +47,14 @@ class PyTest(TestCommand):
 
 
 setup(name='miniconfig',
-      version='0.1.8',
+      version='0.1.9',
       description='configurator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Programming Language :: Python",
           "Programming Language :: Python :: Implementation :: CPython",
       ],
-      keywords='',
+      keywords=["miniconfig", "configurator", "config"],
       author="podhmo",
       author_email="ababjam61@gmail.com",
       url="https://github.com/podhmo/miniconfig",
