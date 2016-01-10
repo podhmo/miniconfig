@@ -37,7 +37,8 @@ def caller_module(level=2):
 
 
 class Control(object):
-    def __init__(self, queue=None):
+    def __init__(self, settings, queue=None):
+        self.settings = settings
         self.queue = queue or []
 
 
@@ -45,7 +46,7 @@ class ConfiguratorCore(object):
     def __init__(self, settings=None, module=None, control=None):
         self.settings = settings or {}
         self.module = module or caller_module()
-        self.control = control or Control()
+        self.control = control or Control(settings)
 
     def build_import_path(self, fn_or_string, dont_popping=True):
         if not fn_or_string.startswith("."):
