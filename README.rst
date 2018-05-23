@@ -68,7 +68,9 @@ Adding directives
 
 directive means that action of configurator.
 
-how to define and use directive ::
+how to define and use directive
+
+.. code-block:: python
 
     def hello(config, name):
         def register():
@@ -81,7 +83,9 @@ how to define and use directive ::
     config.add_directive("hello", hello)
     config.hello("foo")
 
-it is also supported that to define directives by dotted name::
+it is also supported that to define directives by dotted name
+
+.. code-block:: python
 
     ## foo/bar.py
     def hello(config):
