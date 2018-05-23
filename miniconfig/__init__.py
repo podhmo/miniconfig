@@ -35,17 +35,19 @@ def caller_module(level=2):
     return sys.modules[name]
 
 
-class Control(object):
+class Context(object):
     def __init__(self, settings, queue=None):
         self.settings = settings
         self.queue = queue or []
 
 
 class ConfiguratorCore(object):
-    def __init__(self, settings=None, module=None, control=None):
+    context_factory = Context
+
+    def __init__(self, settings=None, module=None, context=None):
         self._settings = settings or {}
         self.module = module or caller_module()
-        self.control = control or Control(self._settings)
+        self.context = context or self.context_factory(self._settings)
 
     def __enter__(self):
         return self
@@ -89,7 +91,7 @@ class ConfiguratorCore(object):
                 includeme = includeme.includeme
             module = import_symbol(includeme.__module__)
 
-        config = self.__class__(self._settings, module=module, control=self.control)
+        config = self.__class__(self._settings, module=module, context=self.context)
         return includeme(config)
 
     def action(self, callback, order=0):
@@ -108,10 +110,10 @@ class ConfiguratorCore(object):
 
     def add_directive(self, name, fn_or_string):
         fn = self.maybe_dotted(fn_or_string)
-        setattr(self.control, name, fn)
+        setattr(self.context, name, fn)
 
     def __getattr__(self, name):
-        attr = getattr(self.control, name)
+        attr = getattr(self.context, name)
         if callable(attr):
             return partial(attr, self)
         return attr
