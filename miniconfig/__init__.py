@@ -104,6 +104,17 @@ class ConfiguratorCore(object):
                 includeme = includeme.includeme
             module = import_symbol(includeme.__module__)
 
+        # hack: importing action is only once
+        try:
+            imported = self.context._imported
+        except AttributeError:
+            imported = self.context._imported = set()
+        if includeme in imported:
+            logger.debug("%s is already imported", includeme)
+            return
+
+        imported.add(includeme)
+
         config = self.__class__(self._settings, module=module, context=self.context)
         return includeme(config)
 
