@@ -70,7 +70,7 @@ def test_directive__action_with_arguments():
     assert collection == [10, 200]
 
 
-def test_directive__sub_configurator_also_same_control():
+def test_directive__sub_configurator_also_same_context():
     config = _getTarget()()
     finished = [False]
 
@@ -87,12 +87,12 @@ def test_directive__sub_configurator_also_same_control():
     assert config.hello() == "hello"
 
 
-def test_directive__sub_configurator_also_same_control2():
-    class WithHelloControl(object):
+def test_directive__sub_configurator_also_same_context2():
+    class WithHelloContext(object):
         def hello(self, config):
             return "hello"
 
-    config = _getTarget()(control=WithHelloControl())
+    config = _getTarget()(context=WithHelloContext())
     finished = [False]
 
     def includeme(config2):
