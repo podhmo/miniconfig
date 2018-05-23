@@ -1,10 +1,9 @@
 # -*- coding:utf-8 -*-
 import logging
-logger = logging.getLogger(__name__)
 from functools import partial
 from importlib import import_module
 import sys
-
+logger = logging.getLogger(__name__)
 
 PHASE1_CONFIG = -20
 PHASE2_CONFIG = -10
@@ -48,6 +47,13 @@ class ConfiguratorCore(object):
         self.module = module or caller_module()
         self.control = control or Control(settings)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, typ, val, tb):
+        self.commit()
+        return None
+
     def build_import_path(self, fn_or_string, dont_popping=True):
         if not fn_or_string.startswith("."):
             return fn_or_string
@@ -83,9 +89,7 @@ class ConfiguratorCore(object):
                 includeme = includeme.includeme
             module = import_symbol(includeme.__module__)
 
-        config = self.__class__(self.settings,
-                                module=module,
-                                control=self.control)
+        config = self.__class__(self.settings, module=module, control=self.control)
         return includeme(config)
 
     def action(self, callback, order=0):
