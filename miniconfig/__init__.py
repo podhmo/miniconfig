@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 PHASE1_CONFIG = -20
 PHASE2_CONFIG = -10
-
+ORDER_DEFAULT = 0
 
 class ConfigurationError(Exception):
     pass
@@ -118,7 +118,7 @@ class ConfiguratorCore(object):
         config = self.__class__(self._settings, module=module, context=self.context)
         return includeme(config)
 
-    def action(self, discriminator, callback, order=0):
+    def action(self, discriminator, callback, order=ORDER_DEFAULT):
         if discriminator in self.seen:
             raise Conflict(discriminator, prev=self.seen[discriminator], current=callback)
         self.seen[discriminator] = callback
