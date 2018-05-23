@@ -35,9 +35,6 @@ yourapp/pluginA.py
     def includeme(config):
         config.settings["A"] = A()
 
-        def includeme(config):
-            config.settings["A"] = PluginA()
-
 yourapp/pluginB.py
 
 .. code-block:: python
