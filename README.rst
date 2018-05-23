@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/podhmo/miniconfig.svg?branch=master
+    :target: https://travis-ci.org/podhmo/miniconfig
+
 miniconfig
 ========================================
 

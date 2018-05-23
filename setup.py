@@ -16,7 +16,6 @@ except IOError:
 
 
 install_requires = [
-    'setuptools',
 ]
 
 
@@ -47,7 +46,7 @@ class PyTest(TestCommand):
 
 
 setup(name='miniconfig',
-      version='0.1.9',
+      version='0.2.0',
       description='configurator',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
