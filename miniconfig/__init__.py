@@ -9,6 +9,7 @@ PHASE1_CONFIG = -20
 PHASE2_CONFIG = -10
 ORDER_DEFAULT = 0
 
+
 class ConfigurationError(Exception):
     pass
 
@@ -128,6 +129,7 @@ class ConfiguratorCore(object):
         for o, callback in sorted(self.queue, key=lambda xs: xs[0]):
             callback()
         self.queue = []
+        self.seen = {}
 
     def maybe_dotted(self, fn_or_string):
         if callable(fn_or_string):
