@@ -13,6 +13,18 @@ class ConfigurationError(Exception):
     pass
 
 
+class Conflict(ConfigurationError):
+    def __init__(self, *args, prev=None, current=None, **kwargs):
+        self.prev = prev
+        self.current = current
+        super().__init__(*args, **kwargs)
+
+    def __str__(self):
+        return "{} is already registered, prev={}, current={}".format(
+            self.args[0], self.prev, self.current
+        )
+
+
 def import_symbol(symbol):
     if "." not in symbol:
         return import_module(symbol)
@@ -36,9 +48,10 @@ def caller_module(level=2):
 
 
 class Context(object):
-    def __init__(self, settings, queue=None):
+    def __init__(self, settings, queue=None, seen=None):
         self.settings = settings
         self.queue = queue or []
+        self.seen = seen or {}
 
 
 class ConfiguratorCore(object):
@@ -94,7 +107,10 @@ class ConfiguratorCore(object):
         config = self.__class__(self._settings, module=module, context=self.context)
         return includeme(config)
 
-    def action(self, callback, order=0):
+    def action(self, discriminator, callback, order=0):
+        if discriminator in self.seen:
+            raise Conflict(discriminator, prev=self.seen[discriminator], current=callback)
+        self.seen[discriminator] = callback
         self.queue.append((order, callback))
 
     def commit(self):

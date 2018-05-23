@@ -17,9 +17,9 @@ def test_order__no_order_option():
     def three():
         L.append(3)
 
-    config.action(one)
-    config.action(two)
-    config.action(three)
+    config.action("o", one)
+    config.action("tw", two)
+    config.action("th", three)
 
     config.commit()
 
@@ -29,7 +29,7 @@ def test_order__no_order_option():
 def test_order__with_order_option():
     from miniconfig import (
         PHASE1_CONFIG,
-        PHASE2_CONFIG
+        PHASE2_CONFIG,
     )
 
     config = _getTarget()()
@@ -44,9 +44,9 @@ def test_order__with_order_option():
     def three():
         L.append(3)
 
-    config.action(one)
-    config.action(two, order=PHASE2_CONFIG)
-    config.action(three, order=PHASE1_CONFIG)
+    config.action("o", one)
+    config.action("tw", two, order=PHASE2_CONFIG)
+    config.action("th", three, order=PHASE1_CONFIG)
 
     config.commit()
 

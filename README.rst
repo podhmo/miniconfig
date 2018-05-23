@@ -76,7 +76,8 @@ how to define and use directive
         def register():
             assert config.settings["foo"] == "foo"
             print("hello: {}".format(name))
-        config.action(register)
+        discriminator = (hello, name)
+        config.action(discriminator, register)
 
 
     config = Configurator(settings={"foo": "foo"})
@@ -91,7 +92,8 @@ it is also supported that to define directives by dotted name
     def hello(config):
         def register():
             print("hai")
-        config.action(register)
+        discriminator = id(object())  # xxx
+        config.action(discriminator, register)
 
     ## yourapp
     config = Configurator()
