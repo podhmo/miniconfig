@@ -43,9 +43,9 @@ class Control(object):
 
 class ConfiguratorCore(object):
     def __init__(self, settings=None, module=None, control=None):
-        self.settings = settings or {}
+        self._settings = settings or {}
         self.module = module or caller_module()
-        self.control = control or Control(settings)
+        self.control = control or Control(self._settings)
 
     def __enter__(self):
         return self
@@ -89,7 +89,7 @@ class ConfiguratorCore(object):
                 includeme = includeme.includeme
             module = import_symbol(includeme.__module__)
 
-        config = self.__class__(self.settings, module=module, control=self.control)
+        config = self.__class__(self._settings, module=module, control=self.control)
         return includeme(config)
 
     def action(self, callback, order=0):
