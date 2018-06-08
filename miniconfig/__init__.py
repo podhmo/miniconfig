@@ -70,9 +70,6 @@ class ConfiguratorCore(object):
         self.commit()
         return None
 
-    def is_init_module(self):
-        return "__init__.py" in self.module.__file__
-
     def include(self, fn_or_string):
         if callable(fn_or_string):
             includeme = fn_or_string
@@ -80,7 +77,7 @@ class ConfiguratorCore(object):
             module = import_symbol(module)
         else:
             symbol_string = build_import_path(
-                self.module, fn_or_string, dont_popping=self.is_init_module()
+                self.module, fn_or_string, dont_popping=is_init_module(self.module)
             )
             logger.debug("include %s where %s", symbol_string, self.module)
             includeme = import_symbol(symbol_string)
@@ -123,7 +120,7 @@ class ConfiguratorCore(object):
         if callable(fn_or_string):
             return fn_or_string
         symbol_string = build_import_path(
-            self.module, fn_or_string, dont_popping=self.is_init_module()
+            self.module, fn_or_string, dont_popping=is_init_module(self.module)
         )
         return import_symbol(symbol_string)
 
@@ -136,6 +133,10 @@ class ConfiguratorCore(object):
         if callable(attr):
             return partial(attr, self)
         return attr
+
+
+def is_init_module(module):
+    return "__init__.py" in module.__file__
 
 
 def build_import_path(module, fn_or_string, dont_popping=True):
