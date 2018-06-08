@@ -55,8 +55,59 @@ class Context(object):
         self.seen = seen or {}
 
 
+def is_init_module(module):
+    return "__init__.py" in module.__file__
+
+
+def build_import_path(module, path, *, dont_popping=True):
+    # examples:
+    # - foo
+    # - foo.bar.boo
+    # - .foo
+    # - ..foo
+    if not path.startswith("."):
+        return path
+
+    nodes = module.__name__.split(".")
+    if path.endswith("."):
+        path = path[1:]
+
+    poped = []
+    for i, c in enumerate(path):
+        if c != ".":
+            break
+        poped.append(nodes.pop())
+    if path == "" or path.endswith("."):
+        return ".".join(nodes)
+
+    if dont_popping:
+        nodes.append(poped[-1])
+    return ".".join(nodes) + "." + path[i:]
+
+
+def build_import_path_plus(module, path, *, dont_popping=True):
+    # examples:
+    # - foo
+    # - foo.bar.boo
+    # - .foo
+    # - ..foo
+    # +
+    # - ./foo -> .foo
+    # - ../foo -> ..foo
+    # - ./foo/bar/boo -> foo.bar.boo
+    # - ../foo/bar -> ..foo.bar
+    if path.startswith("."):
+        if module.__name__ == "__main__":
+            path = path.replace("./", "", 1)
+        else:
+            path = path.replace("./", ".", 1)
+    path = path.replace("/", ".")
+    return build_import_path(module, path, dont_popping=dont_popping)
+
+
 class ConfiguratorCore(object):
     context_factory = Context
+    build_path = staticmethod(build_import_path_plus)
 
     def __init__(self, settings=None, module=None, context=None):
         self._settings = settings or {}
@@ -76,7 +127,7 @@ class ConfiguratorCore(object):
             module = getattr(includeme, "__module__", None)
             module = import_symbol(module)
         else:
-            symbol_string = build_import_path(
+            symbol_string = self.build_path(
                 self.module, fn_or_string, dont_popping=is_init_module(self.module)
             )
             logger.debug("include %s where %s", symbol_string, self.module)
@@ -119,7 +170,7 @@ class ConfiguratorCore(object):
     def maybe_dotted(self, fn_or_string):
         if callable(fn_or_string):
             return fn_or_string
-        symbol_string = build_import_path(
+        symbol_string = self.build_path(
             self.module, fn_or_string, dont_popping=is_init_module(self.module)
         )
         return import_symbol(symbol_string)
@@ -133,31 +184,6 @@ class ConfiguratorCore(object):
         if callable(attr):
             return partial(attr, self)
         return attr
-
-
-def is_init_module(module):
-    return "__init__.py" in module.__file__
-
-
-def build_import_path(module, fn_or_string, dont_popping=True):
-    if not fn_or_string.startswith("."):
-        return fn_or_string
-
-    nodes = module.__name__.split(".")
-    if fn_or_string.endswith("."):
-        fn_or_string = fn_or_string[1:]
-
-    poped = []
-    for i, c in enumerate(fn_or_string):
-        if c != ".":
-            break
-        poped.append(nodes.pop())
-    if fn_or_string == "" or fn_or_string.endswith("."):
-        return ".".join(nodes)
-
-    if dont_popping:
-        nodes.append(poped[-1])
-    return ".".join(nodes) + "." + fn_or_string[i:]
 
 
 # stolen from pyramid
