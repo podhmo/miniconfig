@@ -100,8 +100,14 @@ class ConfiguratorCore(object):
             module = import_symbol(module)
         else:
             symbol_string = self.build_import_path(fn_or_string, dont_popping=self.is_init_module())
+            logger.debug("include %s where %s", symbol_string, self.module)
             includeme = import_symbol(symbol_string)
             if not callable(includeme):
+                if not hasattr(includeme, "includeme"):
+                    logger.info(
+                        "includeme() is not found in %s, where %s", symbol_string, self.module
+                    )
+                    return
                 includeme = includeme.includeme
             module = import_symbol(includeme.__module__)
 
@@ -111,7 +117,7 @@ class ConfiguratorCore(object):
         except AttributeError:
             imported = self.context._imported = set()
         if includeme in imported:
-            logger.debug("%s is already imported", includeme)
+            logger.info("%s is already imported, where %s", includeme, self.module)
             return
 
         imported.add(includeme)
