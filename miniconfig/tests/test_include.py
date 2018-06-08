@@ -1,41 +1,6 @@
-# -*- coding:utf-8 -*-
-import pytest
-
-
 def _getTarget():
     from miniconfig import ConfiguratorCore
     return ConfiguratorCore
-
-
-@pytest.mark.parametrize("current_module, symbol_string, import_symbol", [
-    ("foo.bar.boo", "moo", "moo"),
-    ("foo.bar.boo", "moo.moo", "moo.moo"),
-    ("foo.bar.boo", ".moo", "foo.bar.boo.moo"),
-    ("foo.bar.boo", "..moo", "foo.bar.moo"),
-    ("foo.bar.boo", ".", "foo.bar.boo"),
-    ("foo.bar.boo", "..", "foo.bar"),
-])
-def test_build_import_path(current_module, symbol_string, import_symbol):
-    class module:
-        pass
-    config = _getTarget()(module=module())
-    config.module.__name__ = current_module
-    assert config.build_import_path(symbol_string) == import_symbol
-
-
-@pytest.mark.parametrize("current_module, symbol_string, import_symbol", [
-    ("foo.bar.boo", "moo.Fn", "moo.Fn"),
-    ("foo.bar.boo", ".Fn", "foo.bar.Fn"),
-    ("foo.bar.boo", ".moo:Fn", "foo.bar.moo:Fn"),
-    ("foo.bar.boo", ".moo.Fn", "foo.bar.moo.Fn"),
-    ("foo.bar.boo", "..moo:Fn", "foo.moo:Fn"),
-])
-def test_build_import_path2(current_module, symbol_string, import_symbol):
-    class module:
-        pass
-    config = _getTarget()(module=module())
-    config.module.__name__ = current_module
-    assert config.build_import_path(symbol_string, dont_popping=False) == import_symbol
 
 
 def test_include__function():

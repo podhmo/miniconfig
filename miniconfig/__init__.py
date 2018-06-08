@@ -70,26 +70,6 @@ class ConfiguratorCore(object):
         self.commit()
         return None
 
-    def build_import_path(self, fn_or_string, dont_popping=True):
-        if not fn_or_string.startswith("."):
-            return fn_or_string
-
-        nodes = self.module.__name__.split(".")
-        if fn_or_string.endswith("."):
-            fn_or_string = fn_or_string[1:]
-
-        poped = []
-        for i, c in enumerate(fn_or_string):
-            if c != ".":
-                break
-            poped.append(nodes.pop())
-        if fn_or_string == "" or fn_or_string.endswith("."):
-            return ".".join(nodes)
-
-        if dont_popping:
-            nodes.append(poped[-1])
-        return ".".join(nodes) + "." + fn_or_string[i:]
-
     def is_init_module(self):
         return "__init__.py" in self.module.__file__
 
@@ -99,7 +79,9 @@ class ConfiguratorCore(object):
             module = getattr(includeme, "__module__", None)
             module = import_symbol(module)
         else:
-            symbol_string = self.build_import_path(fn_or_string, dont_popping=self.is_init_module())
+            symbol_string = build_import_path(
+                self.module, fn_or_string, dont_popping=self.is_init_module()
+            )
             logger.debug("include %s where %s", symbol_string, self.module)
             includeme = import_symbol(symbol_string)
             if not callable(includeme):
@@ -140,7 +122,9 @@ class ConfiguratorCore(object):
     def maybe_dotted(self, fn_or_string):
         if callable(fn_or_string):
             return fn_or_string
-        symbol_string = self.build_import_path(fn_or_string, dont_popping=self.is_init_module())
+        symbol_string = build_import_path(
+            self.module, fn_or_string, dont_popping=self.is_init_module()
+        )
         return import_symbol(symbol_string)
 
     def add_directive(self, name, fn_or_string):
@@ -152,6 +136,27 @@ class ConfiguratorCore(object):
         if callable(attr):
             return partial(attr, self)
         return attr
+
+
+def build_import_path(module, fn_or_string, dont_popping=True):
+    if not fn_or_string.startswith("."):
+        return fn_or_string
+
+    nodes = module.__name__.split(".")
+    if fn_or_string.endswith("."):
+        fn_or_string = fn_or_string[1:]
+
+    poped = []
+    for i, c in enumerate(fn_or_string):
+        if c != ".":
+            break
+        poped.append(nodes.pop())
+    if fn_or_string == "" or fn_or_string.endswith("."):
+        return ".".join(nodes)
+
+    if dont_popping:
+        nodes.append(poped[-1])
+    return ".".join(nodes) + "." + fn_or_string[i:]
 
 
 # stolen from pyramid
