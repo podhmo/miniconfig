@@ -24,7 +24,7 @@ PHASE2_CONFIG = -10
 ORDER_DEFAULT = 0
 
 
-Discriminator = str
+Discriminator = t.Union[str, t.Tuple[str, ...]]
 ConfiguratorT = t.TypeVar("ConfiguratorT", bound="ConfiguratorCore")
 ContextT = t.TypeVar("ContextT", bound="Context")
 IncludeFunction = t.Callable[[ConfiguratorT], t.Any]
@@ -37,7 +37,7 @@ class Context:
         settings: t.Optional[t.Dict[str, t.Any]] = None,
         *,
         queue: t.Optional[t.List[t.Tuple[int, CallbackFunction]]] = None,
-        seen: t.Optional[t.Dict[str, CallbackFunction]] = None,
+        seen: t.Optional[t.Dict[Discriminator, CallbackFunction]] = None,
     ) -> None:
         self.settings = settings
         self.queue = queue or []

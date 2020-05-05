@@ -1,3 +1,4 @@
+import typing as t
 from miniconfig import ConfiguratorCore
 
 
@@ -5,11 +6,11 @@ class Configurator(ConfiguratorCore):
     pass
 
 
-def add_plugin(config, name, plugin):
-    def register():
+def add_plugin(config: Configurator, name: str, plugin: t.Any) -> None:
+    def register() -> None:
         config.settings[name] = plugin
 
-    discriminator = (add_plugin, name)
+    discriminator = (add_plugin.__name__, name)
     config.action(discriminator, register)
 
 

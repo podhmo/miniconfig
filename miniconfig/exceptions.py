@@ -19,5 +19,19 @@ class Conflict(ConfigurationError):
 
     def __str__(self) -> str:
         return "{} is already registered, prev={}, current={}".format(
-            self.args[0], self.prev, self.current
+            self.args[0], _fullname(self.prev), _fullname(self.current)
         )
+
+
+def _fullname(fn: t.Optional[CallbackFunction]) -> str:
+    if fn is None:
+        return str(None)
+    xs: t.List[str] = []
+
+    if hasattr(fn, "__module__"):
+        xs.append(fn.__module__)
+
+    xs.append(
+        getattr(fn, "__qualname__", None) or getattr(fn, "__name__", None) or str(fn)
+    )
+    return ".".join(xs)
