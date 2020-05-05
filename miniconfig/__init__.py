@@ -1,8 +1,8 @@
-# -*- coding:utf-8 -*-
 import logging
+import sys
 from functools import partial
 from importlib import import_module
-import sys
+from miniconfig.langhelpers import reify # noqa F401
 
 logger = logging.getLogger(__name__)
 
@@ -189,22 +189,3 @@ class ConfiguratorCore(object):
         if callable(attr):
             return partial(attr, self)
         return attr
-
-
-# stolen from pyramid
-class reify(object):
-    """cached property"""
-
-    def __init__(self, wrapped):
-        self.wrapped = wrapped
-        try:
-            self.__doc__ = wrapped.__doc__
-        except:
-            pass
-
-    def __get__(self, inst, objtype=None):
-        if inst is None:
-            return self
-        val = self.wrapped(inst)
-        setattr(inst, self.wrapped.__name__, val)
-        return val
