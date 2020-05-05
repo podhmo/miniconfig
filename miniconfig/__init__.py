@@ -48,8 +48,7 @@ class Context:
         return set()
 
 
-# TODO: rename?
-class ConfiguratorCore:
+class Configurator:
     context_factory = Context
     build_path = staticmethod(build_import_path_plus)
 
@@ -154,3 +153,7 @@ class ConfiguratorCore:
         if callable(attr):
             return partial(attr, self)
         return attr
+
+
+# for backward compatibility
+ConfiguratorCore = Configurator
