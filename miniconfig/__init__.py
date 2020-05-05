@@ -133,6 +133,7 @@ class ConfiguratorCore(object):
             )
             logger.debug("include %s where %s", symbol_string, self.module)
             includeme = import_symbol(symbol_string)
+
             if not callable(includeme):
                 if not hasattr(includeme, "includeme"):
                     logger.info(

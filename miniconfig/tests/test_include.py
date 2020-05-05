@@ -16,36 +16,42 @@ def test_include__function():
 
 
 def test_include__module():
-    import imp
     import sys
 
-    status = [False]
+    def _fake_module(name):
+        class module:
+            status = [False]
 
-    def includeme(config):
-        status[0] = True
+            @classmethod
+            def includeme(cls, config):
+                cls.status[0] = True
 
-    module = imp.new_module("miniconfig.foo")
-    module.includeme = includeme
-    sys.modules["miniconfig.foo"] = module
+        sys.modules[name] = module()
+        return module
+
+    foo = _fake_module("miniconfig.foo")
 
     config = _getTarget()()
     config.include("miniconfig.foo")
-    assert status[0] is True
+    assert foo.status[0] is True
 
 
 def test_include__module_with_functioname():
-    import imp
     import sys
 
-    status = [False]
+    def _fake_module(name):
+        class module:
+            status = [False]
 
-    def includeme(config):
-        status[0] = True
+            @classmethod
+            def myincludeme(cls, config):
+                cls.status[0] = True
 
-    module = imp.new_module("miniconfig.boo")
-    module.myincludeme = includeme
-    sys.modules["miniconfig.boo"] = module
+        sys.modules[name] = module
+        return module
+
+    boo = _fake_module("miniconfig.boo")
 
     config = _getTarget()()
     config.include("miniconfig.boo:myincludeme")
-    assert status[0] is True
+    assert boo.status[0] is True

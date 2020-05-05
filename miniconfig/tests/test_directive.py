@@ -17,24 +17,27 @@ def test_directive__action_is_added():
 
 
 def test_directive__define_by_dottedname():
-    import imp
     import sys
 
-    finished = [False]
+    def _fake_module(name):
+        class module:
+            finished = [False]
 
-    def do_action_another_module(config):
-        finished[0] = True
+            @classmethod
+            def do_action(cls, config):
+                cls.finished[0] = True
 
-    module = imp.new_module("miniconfig.moo")
-    module.do_action = do_action_another_module
-    sys.modules["miniconfig.moo"] = module
+        sys.modules[name] = module
+        return module
+
+    moo = _fake_module("miniconfig.moo")
 
     config = _getTarget()()
     config.add_directive("do_action", "miniconfig.moo:do_action")
     assert hasattr(config, "do_action") is True
 
     config.do_action()
-    assert finished[0] is True
+    assert moo.finished[0] is True
 
 
 def test_directive__action_with_config():
