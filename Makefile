@@ -21,6 +21,10 @@ typing:
 	mypy --strict --strict-equality --ignore-missing-imports miniconfig
 mypy: typing
 
+examples:
+	$(MAKE) -C examples
+.PHONY: examples
+
 build:
 #	pip install wheel
 	python setup.py bdist_wheel

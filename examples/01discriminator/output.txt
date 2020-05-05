@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "app.py", line 21, in <module>
+    config.add_plugin("x", object())  # conflict
+  File "app.py", line 13, in add_plugin
+    config.action(discriminator, register)
+  File "root/miniconfig/__init__.py", line 126, in action
+    raise Conflict(
+miniconfig.exceptions.Conflict: (<function add_plugin at 0x10dfc11f0>, 'x') is already registered, prev=<function add_plugin.<locals>.register at 0x10e15d5e0>, current=<function add_plugin.<locals>.register at 0x10e2a59d0>
