@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# type: ignore
 def _getTarget():
     from miniconfig import ConfiguratorCore
 
@@ -93,7 +93,9 @@ def test_directive__sub_configurator_also_same_context():
 
 
 def test_directive__sub_configurator_also_same_context2():
-    class WithHelloContext(object):
+    from miniconfig import Context
+
+    class WithHelloContext(Context):
         def hello(self, config):
             return "hello"
 

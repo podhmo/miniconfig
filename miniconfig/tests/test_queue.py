@@ -1,3 +1,4 @@
+# type: ignore
 def _getTarget():
     from miniconfig import ConfiguratorCore
 
