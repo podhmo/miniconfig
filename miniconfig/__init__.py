@@ -3,6 +3,7 @@ import logging
 from functools import partial
 from importlib import import_module
 import sys
+
 logger = logging.getLogger(__name__)
 
 PHASE1_CONFIG = -20
@@ -135,7 +136,9 @@ class ConfiguratorCore(object):
             if not callable(includeme):
                 if not hasattr(includeme, "includeme"):
                     logger.info(
-                        "includeme() is not found in %s, where %s", symbol_string, self.module
+                        "includeme() is not found in %s, where %s",
+                        symbol_string,
+                        self.module,
                     )
                     return
                 includeme = includeme.includeme
@@ -157,7 +160,9 @@ class ConfiguratorCore(object):
 
     def action(self, discriminator, callback, order=ORDER_DEFAULT):
         if discriminator in self.seen:
-            raise Conflict(discriminator, prev=self.seen[discriminator], current=callback)
+            raise Conflict(
+                discriminator, prev=self.seen[discriminator], current=callback
+            )
         self.seen[discriminator] = callback
         self.queue.append((order, callback))
 

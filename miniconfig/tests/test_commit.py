@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 def _getTarget():
     from miniconfig import ConfiguratorCore
+
     return ConfiguratorCore
 
 

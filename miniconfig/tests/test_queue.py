@@ -1,5 +1,6 @@
 def _getTarget():
     from miniconfig import ConfiguratorCore
+
     return ConfiguratorCore
 
 
@@ -12,4 +13,3 @@ def test_with_queue():
     assert len(config.queue) == 0
     config.include(includeme)
     assert len(config.queue) == 1
-

@@ -1,5 +1,6 @@
 def _getTarget():
     from miniconfig import ConfiguratorCore
+
     return ConfiguratorCore
 
 

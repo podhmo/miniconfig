@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 def _getTarget():
     from miniconfig import ConfiguratorCore
+
     return ConfiguratorCore
 
 
@@ -80,6 +81,7 @@ def test_directive__sub_configurator_also_same_context():
 
     def hello(config):
         return "hello"
+
     config.add_directive("hello", hello)
     config.include(includeme)
 

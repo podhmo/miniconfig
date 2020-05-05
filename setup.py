@@ -21,8 +21,8 @@ setup(
     extras_require={"testing": tests_requires, "dev": dev_requires},
     tests_require=tests_requires,
     test_suite="miniconfig.tests",
-#     entry_points="""
-#       [console_scripts]
-#       miniconfig = miniconfig.cli:main
-# """,
+    #     entry_points="""
+    #       [console_scripts]
+    #       miniconfig = miniconfig.cli:main
+    # """,
 )
