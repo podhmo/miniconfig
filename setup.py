@@ -21,6 +21,7 @@ setup(
     extras_require={"testing": tests_requires, "dev": dev_requires},
     tests_require=tests_requires,
     test_suite="miniconfig.tests",
+    package_data={"miniconfig": ["py.typed"],},
     #     entry_points="""
     #       [console_scripts]
     #       miniconfig = miniconfig.cli:main
