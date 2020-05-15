@@ -20,3 +20,14 @@ class reify(t.Generic[T]):
         val = self.wrapped(inst)
         setattr(inst, self.wrapped.__name__, val)
         return val
+
+
+def fullname(typ: t.Any) -> str:
+    typ = get_origin_type(typ)
+    return f"{typ.__module__}:{typ.__name__}"
+
+
+def get_origin_type(typ: t.Type[t.Any]) -> t.Type[t.Any]:
+    if hasattr(typ, "__origin__"):
+        return typ.__origin__  # type: ignore
+    return typ

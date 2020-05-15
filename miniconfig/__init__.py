@@ -15,7 +15,7 @@ from miniconfig.exceptions import (  # noqa F401
     ConfigurationError,
     Conflict,
 )
-from miniconfig.langhelpers import reify  # noqa F401
+from miniconfig.langhelpers import reify, fullname
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ class Configurator:
             symbol_string = self.build_path(
                 self.module, fn_or_string, dont_popping=is_init_module(self.module)
             )
-            logger.debug("include %s where %s", symbol_string, self.module)
+            logger.debug("include %s where %s", symbol_string, self.module.__name__)
             includeme_or_module = import_symbol(symbol_string)
 
             if callable(includeme_or_module):
@@ -96,7 +96,7 @@ class Configurator:
                     logger.info(
                         "includeme() is not found in %s, where %s",
                         symbol_string,
-                        self.module,
+                        self.module.__name__,
                     )
                     return
                 includeme = includeme_or_module.includeme  # type: ignore
@@ -106,7 +106,11 @@ class Configurator:
         # hack: importing action is only once
         imported = self.context.imported
         if includeme in imported:
-            logger.info("%s is already imported, where %s", includeme, self.module)
+            logger.debug(
+                "%s is already imported, where %s",
+                fullname(includeme),
+                self.module.__name__,
+            )
             return
 
         imported.add(includeme)

@@ -3,6 +3,6 @@ Traceback (most recent call last):
     config.add_plugin("x", object())  # conflict
   File "app.py", line 14, in add_plugin
     config.action(discriminator, register)
-  File "root/miniconfig/__init__.py", line 125, in action
+  File "root/miniconfig/__init__.py", line 129, in action
     raise Conflict(
 miniconfig.exceptions.Conflict: ('add_plugin', 'x') is already registered, prev=__main__.add_plugin.<locals>.register, current=__main__.add_plugin.<locals>.register
