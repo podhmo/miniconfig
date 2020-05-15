@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/podhmo/miniconfig.svg?branch=master)](https://travis-ci.org/podhmo/miniconfig)
-
-# miniconfig
+# miniconfig [![Build Status](https://travis-ci.org/podhmo/miniconfig.svg?branch=master)](https://travis-ci.org/podhmo/miniconfig) [![PyPi version](https://img.shields.io/pypi/v/miniconfig.svg)](https://pypi.python.org/pypi/miniconfig) [![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/en/stable/)
 
 
 making configuration phase, in your application.
