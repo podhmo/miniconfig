@@ -82,6 +82,10 @@ class Configurator:
             includeme = fn_or_string
             module = getattr(includeme, "__module__", None)
             module = import_symbol(module)
+
+            # for class has __call__ method
+            if hasattr(includeme, "includeme"):
+                includeme = includeme.includeme  # type: ignore
         else:
             symbol_string = self.build_path(
                 self.module, fn_or_string, dont_popping=is_init_module(self.module)
@@ -91,6 +95,10 @@ class Configurator:
 
             if callable(includeme_or_module):
                 includeme = includeme_or_module
+
+                # for class has __call__ method
+                if hasattr(includeme, "includeme"):
+                    includeme = includeme.includeme  # type: ignore
             else:
                 if not hasattr(includeme_or_module, "includeme"):
                     logger.info(
