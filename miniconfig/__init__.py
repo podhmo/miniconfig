@@ -44,13 +44,14 @@ class Context:
         self.seen = seen or {}
 
     @reify
-    def imported(self) -> t.Set[t.Any]:
+    def imported(self) -> t.Set[t.Union[str, t.Callable[..., None]]]:
         return set()
 
 
 class Configurator:
     context_factory = Context
     build_path = staticmethod(build_import_path_plus)
+    attrname = "includeme"
 
     def __init__(
         self,
@@ -77,15 +78,22 @@ class Configurator:
         self.commit()
         return None
 
-    def include(self, fn_or_string: t.Union[t.Callable[..., t.Any], str]) -> t.Any:
+    def include(
+        self,
+        fn_or_string: t.Union[t.Callable[..., t.Any], str],
+        *,
+        attrname: t.Optional[str] = None,
+    ) -> t.Any:
+        attrname = attrname or self.attrname
+
         if callable(fn_or_string):
             includeme = fn_or_string
             module = getattr(includeme, "__module__", None)
             module = import_symbol(module)
 
             # for class has __call__ method
-            if hasattr(includeme, "includeme"):
-                includeme = includeme.includeme  # type: ignore
+            if hasattr(includeme, attrname):
+                includeme = getattr(includeme, attrname)
         else:
             symbol_string = self.build_path(
                 self.module, fn_or_string, dont_popping=is_init_module(self.module)
@@ -97,17 +105,18 @@ class Configurator:
                 includeme = includeme_or_module
 
                 # for class has __call__ method
-                if hasattr(includeme, "includeme"):
-                    includeme = includeme.includeme  # type: ignore
+                if hasattr(includeme, attrname):
+                    includeme = getattr(includeme, attrname)
+            elif hasattr(includeme_or_module, attrname):
+                includeme = getattr(includeme_or_module, attrname)
             else:
-                if not hasattr(includeme_or_module, "includeme"):
-                    logger.info(
-                        "includeme() is not found in %s, where %s",
-                        symbol_string,
-                        self.module.__name__,
-                    )
-                    return
-                includeme = includeme_or_module.includeme  # type: ignore
+                logger.info(
+                    "%s() is not found in %s, where %s",
+                    attrname,
+                    symbol_string,
+                    self.module.__name__,
+                )
+                return
 
             module = import_symbol(includeme.__module__)
 

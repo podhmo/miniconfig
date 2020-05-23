@@ -56,3 +56,36 @@ def test_include__module_with_functioname():
     config = _getTarget()()
     config.include("miniconfig.boo:myincludeme")
     assert boo.status[0] is True
+
+
+def test_include__callable_class():
+    called = []
+
+    class Module:
+        def includeme(self, config):
+            called.append("includeme")
+
+        def __call__(self):
+            raise RuntimeError("don't call")
+
+    config = _getTarget()()
+    config.include(Module())
+    assert called == ["includeme"]
+
+
+def test_include__attrname():
+    called = []
+
+    class Module:
+        def includeme(self, config):
+            called.append("includeme")
+
+        def includeme_for_another(self, config):
+            called.append("another")
+
+        def __call__(self):
+            raise RuntimeError("don't call")
+
+    config = _getTarget()()
+    config.include(Module(), attrname="includeme_for_another")
+    assert called == ["another"]
