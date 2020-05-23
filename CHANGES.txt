@@ -1,5 +1,10 @@
 0.5.0
 
+- support callable object
+- more flexible includeme
+
+0.5.0
+
 - typing
 
 0.4.0
