@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 install_requires = []
 dev_requires = ["black", "flake8", "mypy"]
-tests_requires = ["pytest", "pytest-cov"]
+tests_requires = ["pytest>=4.6", "pytest-cov"]
 
 setup(
     classifiers=[
